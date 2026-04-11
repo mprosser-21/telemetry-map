@@ -10,13 +10,13 @@ const INITIAL_VIEW_STATE = {
 }
 
 export default function MapView() {
-  const aerialLayer = useAerialData()
+  const aerialLayers = useAerialData()
 
   return (
     <DeckGL
       controller={true}
       initialViewState={INITIAL_VIEW_STATE}
-      layers={[aerialLayer]}
+      layers={aerialLayers}
     >
       <ReactMapGL
         mapboxAccessToken={import.meta.env.VITE_MAPBOX_ACCESS_TOKEN}

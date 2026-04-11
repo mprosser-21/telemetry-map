@@ -5,9 +5,11 @@ export type ADSBData =
 
 export type Aircraft = {
   hex: string
+  category?: string | null
   flight?: string | null
   lat?: number | null
   lon?: number | null
+  track?: number | null
   lastSeenAt: number
   history: Array<AircraftLocation>
 }
@@ -19,3 +21,17 @@ export type AircraftLocation = {
 }
 
 export type AircraftMap = Record<string, Aircraft>
+
+type AerialIconName = 'plane' | 'helicopter' | 'other'
+
+export type AerialIconMapping = {
+  [key in AerialIconName]: {
+    x: number
+    y: number
+    width: number
+    height: number
+    anchorX: number
+    anchorY: number
+    mask: boolean
+  }
+}
