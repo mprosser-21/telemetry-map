@@ -1,4 +1,4 @@
-import type { paths } from './adsb.generated'
+import type { paths, components } from './adsb.generated'
 
 export type ADSBData =
   paths['/v2/point/{lat}/{lon}/{radius}']['get']['responses']['200']['content']['application/json']
@@ -9,8 +9,11 @@ export type Aircraft = {
   flight?: string | null
   lat?: number | null
   lon?: number | null
-  track?: number | null
+  direction?: number | null
   altitude?: string | number | null
+  speed?: number | null
+  designator?: string | null
+  data: components['schemas']['V2Response_AcItem']
   lastSeenAt: number
   history: Array<AircraftLocation>
 }
@@ -18,6 +21,7 @@ export type Aircraft = {
 export type AircraftLocation = {
   lat: number
   lon: number
+  altitude?: string | number | null
   ts: number
 }
 

@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
-import useSWR from 'swr'
 import type { AircraftMap } from '../types/aerial'
 import {
   fetcher,
   processAerialUpdate,
   pruneStaleAircraft,
 } from '../utils/aerialUtils'
+import useSWR from 'swr'
 
+// Fetch data from adsb.lol API and update state with the latest data
 export default function useAircraft() {
   const [aircraftMap, setAircraftMap] = useState<AircraftMap>({})
 

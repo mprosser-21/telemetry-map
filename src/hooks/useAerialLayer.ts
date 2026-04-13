@@ -1,15 +1,22 @@
 import { IconLayer, TripsLayer } from 'deck.gl'
 import { useMemo } from 'react'
 import type { AircraftMap } from '../types/aerial'
-import { AERIAL_ICON_MAPPING, getAerialIcon } from '../utils/aerialUtils'
+import {
+  AERIAL_ICON_MAPPING,
+  getAerialIcon,
+  normalizeAltitude,
+} from '../utils/aerialUtils'
 
 type AircraftTrip = {
   hex: string
-  path: [number, number][]
+  path: [number, number, number][]
   timestamps: number[]
 }
 
-export default function useAerialLayers(aircraftMap: AircraftMap) {
+export default function useAerialLayers(
+  aircraftMap: AircraftMap,
+  setSelectedAircraftHex: (hex: string) => void,
+) {
   // Trails for the last 5 segmenets of each aircraft
   const recentPaths = useMemo<AircraftTrip[]>(() => {
     return Object.values(aircraftMap)
@@ -25,7 +32,11 @@ export default function useAerialLayers(aircraftMap: AircraftMap) {
         return [
           {
             hex,
-            path: visibleHistory.map((point) => [point.lon, point.lat]),
+            path: visibleHistory.map((point) => [
+              point.lon,
+              point.lat,
+              normalizeAltitude(point.altitude),
+            ]),
             timestamps: visibleHistory.map((_, index) => index),
           },
         ]
@@ -63,8 +74,15 @@ export default function useAerialLayers(aircraftMap: AircraftMap) {
       data: aircraftLocations,
       iconAtlas: '/aerial-icon-atlas.svg',
       iconMapping: AERIAL_ICON_MAPPING,
-      getPosition: (aircraft) => [aircraft.lon, aircraft.lat],
-      getAngle: (aircraft) => -(aircraft.track ?? 0),
+      onClick: (info) => {
+        setSelectedAircraftHex(info.object.hex)
+      },
+      getPosition: (aircraft) => [
+        aircraft.lon,
+        aircraft.lat,
+        normalizeAltitude(aircraft.altitude),
+      ],
+      getAngle: (aircraft) => -(aircraft.direction ?? 0),
       getIcon: (aircraft) => getAerialIcon(aircraft.category),
       getColor: (aircraft) =>
         aircraft.altitude === 'ground' ? [163, 163, 163] : [56, 189, 248],
@@ -72,8 +90,9 @@ export default function useAerialLayers(aircraftMap: AircraftMap) {
       sizeUnits: 'pixels',
       sizeScale: 1,
       pickable: true,
+      billboard: false,
     })
-  }, [aircraftMap])
+  }, [aircraftMap, setSelectedAircraftHex])
 
   return [pathLayer, iconLayer]
 }

@@ -17,7 +17,18 @@ export function processAerialUpdate(
   const { ac, now } = adsbUpdate
 
   for (const update of ac) {
-    const { hex, lat, lon, flight, category, track, alt_baro } = update
+    const {
+      hex,
+      lat,
+      lon,
+      flight,
+      category,
+      track,
+      alt_baro,
+      gs,
+      t,
+      true_heading,
+    } = update
     if (lat != null && lon != null) {
       const existingHistory = newAircraftMap[hex]?.history || []
       newAircraftMap[hex] = {
@@ -26,10 +37,16 @@ export function processAerialUpdate(
         lat,
         lon,
         flight,
-        track,
+        direction: alt_baro === 'ground' ? true_heading : track,
         altitude: alt_baro,
+        speed: gs,
+        designator: t,
         lastSeenAt: now,
-        history: [...existingHistory, { lat, lon, ts: now }],
+        data: update,
+        history: [
+          ...existingHistory,
+          { lat, lon, altitude: alt_baro, ts: now },
+        ],
       }
     }
   }
@@ -45,6 +62,24 @@ export function pruneStaleAircraft(aircraftMap: AircraftMap, now: number) {
       ([_, aircraft]) => aircraft.lastSeenAt > now - STALE_THRESHOLD,
     ),
   )
+}
+
+const FEET_TO_METERS = 0.3048
+
+// Normalize altitude and convert to meters
+export function normalizeAltitude(altitude?: string | number | null) {
+  if (altitude == null || altitude === 'ground') {
+    return 0
+  }
+
+  const numericAltitude =
+    typeof altitude === 'number' ? altitude : Number.parseFloat(altitude)
+
+  if (Number.isNaN(numericAltitude)) {
+    return 0
+  }
+
+  return numericAltitude * FEET_TO_METERS
 }
 
 export const AERIAL_ICON_MAPPING: AerialIconMapping = {
@@ -77,6 +112,7 @@ export const AERIAL_ICON_MAPPING: AerialIconMapping = {
   },
 }
 
+// Many other types, but let's keep it simple for now
 export function getAerialIcon(category?: string | null) {
   if (category === 'A7') {
     return 'helicopter'
