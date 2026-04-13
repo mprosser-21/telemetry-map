@@ -1,7 +1,8 @@
 import ReactMapGL, { NavigationControl } from 'react-map-gl/mapbox'
 import 'mapbox-gl/dist/mapbox-gl.css'
-import { useAerialData } from '../hooks/useAerialLayer'
+import useAerialLayers from '../hooks/useAerialLayer'
 import DeckGL from 'deck.gl'
+import useAircraft from '../hooks/useAircraft'
 
 const INITIAL_VIEW_STATE = {
   latitude: 41.824,
@@ -10,7 +11,8 @@ const INITIAL_VIEW_STATE = {
 }
 
 export default function MapView() {
-  const aerialLayers = useAerialData()
+  const aircraftMap = useAircraft()
+  const aerialLayers = useAerialLayers(aircraftMap)
 
   return (
     <DeckGL

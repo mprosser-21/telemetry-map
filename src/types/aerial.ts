@@ -10,6 +10,7 @@ export type Aircraft = {
   lat?: number | null
   lon?: number | null
   track?: number | null
+  altitude?: string | number | null
   lastSeenAt: number
   history: Array<AircraftLocation>
 }

@@ -17,7 +17,7 @@ export function processAerialUpdate(
   const { ac, now } = adsbUpdate
 
   for (const update of ac) {
-    const { hex, lat, lon, flight, category, track } = update
+    const { hex, lat, lon, flight, category, track, alt_baro } = update
     if (lat != null && lon != null) {
       const existingHistory = newAircraftMap[hex]?.history || []
       newAircraftMap[hex] = {
@@ -27,6 +27,7 @@ export function processAerialUpdate(
         lon,
         flight,
         track,
+        altitude: alt_baro,
         lastSeenAt: now,
         history: [...existingHistory, { lat, lon, ts: now }],
       }

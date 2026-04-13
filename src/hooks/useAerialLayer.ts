@@ -1,68 +1,59 @@
-import useSWR from 'swr'
-import { IconLayer, LineLayer } from 'deck.gl'
-import { useEffect, useMemo, useState } from 'react'
+import { IconLayer, TripsLayer } from 'deck.gl'
+import { useMemo } from 'react'
 import type { AircraftMap } from '../types/aerial'
-import {
-  processAerialUpdate,
-  fetcher,
-  pruneStaleAircraft,
-  AERIAL_ICON_MAPPING,
-  getAerialIcon,
-} from '../utils/aerialUtils'
+import { AERIAL_ICON_MAPPING, getAerialIcon } from '../utils/aerialUtils'
 
-export function useAerialData() {
-  const [aircraftMap, setAircraftMap] = useState<AircraftMap>({})
+type AircraftTrip = {
+  hex: string
+  path: [number, number][]
+  timestamps: number[]
+}
 
-  // TODO: Error handling with retry / backoff
-  const { data } = useSWR('/api/adsb/v2/point/41.8240/-71.4128/50', fetcher, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    refreshInterval: 1000,
-  })
+export default function useAerialLayers(aircraftMap: AircraftMap) {
+  // Trails for the last 5 segmenets of each aircraft
+  const recentPaths = useMemo<AircraftTrip[]>(() => {
+    return Object.values(aircraftMap)
+      .filter((aircraft) => aircraft.altitude !== 'ground')
+      .flatMap((aircraft) => {
+        const { hex, history } = aircraft
+        const visibleHistory = history.slice(-6)
 
-  useEffect(() => {
-    if (data) {
-      setAircraftMap((prev) => {
-        const newAircraftMap = processAerialUpdate(prev, data)
-
-        return pruneStaleAircraft(newAircraftMap, data.now)
-      })
-    }
-  }, [data])
-
-  const lineSegments = useMemo(() => {
-    return Object.values(aircraftMap).flatMap((aircraft) => {
-      const { hex, history } = aircraft
-      return aircraft.history.flatMap((point, index) => {
-        const previousPoint = history[index - 1]
-
-        if (!previousPoint) {
+        if (visibleHistory.length < 2) {
           return []
         }
 
         return [
           {
             hex,
-            from: previousPoint,
-            to: point,
+            path: visibleHistory.map((point) => [point.lon, point.lat]),
+            timestamps: visibleHistory.map((_, index) => index),
           },
         ]
       })
-    })
   }, [aircraftMap])
 
-  const lineLayer = useMemo(() => {
-    return new LineLayer({
+  const pathLayer = useMemo(() => {
+    const currentTime = Math.max(
+      0,
+      ...recentPaths.flatMap((path) => path.timestamps),
+    )
+
+    return new TripsLayer<AircraftTrip>({
       id: 'aerial-paths',
-      data: lineSegments,
+      data: recentPaths,
+      getPath: (trip) => trip.path,
+      getTimestamps: (trip) => trip.timestamps,
       getColor: () => [56, 189, 248],
-      getSourcePosition: (segment) => [segment.from.lon, segment.from.lat],
-      getTargetPosition: (segment) => [segment.to.lon, segment.to.lat],
       getWidth: 2,
-      pickable: true,
+      widthMinPixels: 2,
+      currentTime,
+      opacity: 0.8,
+      fadeTrail: true,
+      trailLength: 5,
+      capRounded: true,
+      jointRounded: true,
     })
-  }, [lineSegments])
+  }, [recentPaths])
 
   const iconLayer = useMemo(() => {
     const aircraftLocations = Object.values(aircraftMap)
@@ -73,14 +64,16 @@ export function useAerialData() {
       iconAtlas: '/aerial-icon-atlas.svg',
       iconMapping: AERIAL_ICON_MAPPING,
       getPosition: (aircraft) => [aircraft.lon, aircraft.lat],
+      getAngle: (aircraft) => -(aircraft.track ?? 0),
       getIcon: (aircraft) => getAerialIcon(aircraft.category),
-      getColor: () => [56, 189, 248],
-      getSize: 22,
+      getColor: (aircraft) =>
+        aircraft.altitude === 'ground' ? [163, 163, 163] : [56, 189, 248],
+      getSize: 16,
       sizeUnits: 'pixels',
       sizeScale: 1,
       pickable: true,
     })
   }, [aircraftMap])
 
-  return [lineLayer, iconLayer]
+  return [pathLayer, iconLayer]
 }
