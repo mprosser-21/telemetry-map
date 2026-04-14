@@ -1,4 +1,5 @@
 import type { paths, components } from './adsb.generated'
+import type { HighlightGroupColorKey } from './color'
 
 export type ADSBData =
   paths['/v2/point/{lat}/{lon}/{radius}']['get']['responses']['200']['content']['application/json']
@@ -27,7 +28,18 @@ export type AircraftLocation = {
 
 export type AircraftMap = Record<string, Aircraft>
 
-type AerialIconName = 'plane' | 'helicopter' | 'other'
+export type AircraftCategory = 'fixedWing' | 'rotorcraft' | 'other'
+
+type AerialIconName = AircraftCategory
+
+export type AircraftHighlightGroup = {
+  id: string
+  name: string
+  color: HighlightGroupColorKey
+  categories: AircraftCategory[]
+  altitudeRange: [number, number]
+  speedRange: [number, number]
+}
 
 export type AerialIconMapping = {
   [key in AerialIconName]: {

@@ -1,9 +1,17 @@
 import { TripsLayer } from 'deck.gl'
 import { useMemo } from 'react'
-import type { Aircraft, AircraftTrip } from '../types/aerial'
+import type {
+  Aircraft,
+  AircraftHighlightGroup,
+  AircraftTrip,
+} from '../types/aerial'
 import { normalizeAltitude } from '../utils/aerialUtils'
+import { getSelectedAircraftTrailColor } from '../utils/colorUtils'
 
-export default function useSelectedLayers(selectedAircraft?: Aircraft) {
+export default function useSelectedLayers(
+  selectedAircraft: Aircraft | undefined,
+  highlightGroups: AircraftHighlightGroup[],
+) {
   const selectedTrip = useMemo<AircraftTrip | null>(() => {
     if (!selectedAircraft || selectedAircraft.altitude === 'ground') {
       return null
@@ -36,7 +44,8 @@ export default function useSelectedLayers(selectedAircraft?: Aircraft) {
       data,
       getPath: (trip) => trip.path,
       getTimestamps: (trip) => trip.timestamps,
-      getColor: () => [125, 211, 252, 230],
+      getColor: () =>
+        getSelectedAircraftTrailColor(selectedAircraft, highlightGroups),
       widthMinPixels: 3,
       currentTime,
       opacity: 0.95,
@@ -46,7 +55,7 @@ export default function useSelectedLayers(selectedAircraft?: Aircraft) {
       jointRounded: true,
       pickable: false,
     })
-  }, [selectedTrip])
+  }, [selectedTrip, selectedAircraft, highlightGroups])
 
   return selectedTripLayer
 }

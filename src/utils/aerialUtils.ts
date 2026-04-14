@@ -2,6 +2,8 @@ import type {
   ADSBData,
   AerialIconMapping,
   Aircraft,
+  AircraftHighlightGroup,
+  AircraftCategory,
   AircraftMap,
 } from '../types/aerial'
 
@@ -98,7 +100,7 @@ export function getAircraftPosition(
 }
 
 export const AERIAL_ICON_MAPPING: AerialIconMapping = {
-  plane: {
+  fixedWing: {
     x: 0,
     y: 0,
     width: 32,
@@ -107,7 +109,7 @@ export const AERIAL_ICON_MAPPING: AerialIconMapping = {
     anchorY: 16,
     mask: true,
   },
-  helicopter: {
+  rotorcraft: {
     x: 32,
     y: 0,
     width: 32,
@@ -129,13 +131,61 @@ export const AERIAL_ICON_MAPPING: AerialIconMapping = {
 
 // Many other types, but let's keep it simple for now
 export function getAerialIcon(category?: string | null) {
+  return getAircraftCategory(category)
+}
+
+export function getAircraftCategory(
+  category?: string | null,
+): AircraftCategory {
   if (category === 'A7') {
-    return 'helicopter'
+    return 'rotorcraft'
   }
 
   if (category?.startsWith('A')) {
-    return 'plane'
+    return 'fixedWing'
   }
 
   return 'other'
+}
+
+function getNumericAltitude(altitude?: string | number | null) {
+  if (altitude == null) {
+    return null
+  }
+
+  if (altitude === 'ground') {
+    return 0
+  }
+
+  const numericAltitude =
+    typeof altitude === 'number' ? altitude : Number.parseFloat(altitude)
+
+  return Number.isNaN(numericAltitude) ? null : numericAltitude
+}
+
+function getNumericSpeed(speed?: number | null) {
+  return speed == null || Number.isNaN(speed) ? null : speed
+}
+
+export function getAircraftMatchingHighlightGroup(
+  aircraft: Aircraft,
+  groups: AircraftHighlightGroup[],
+) {
+  return groups.find((group) => {
+    const category = getAircraftCategory(aircraft.category)
+    const altitude = getNumericAltitude(aircraft.altitude)
+    const speed = getNumericSpeed(aircraft.speed)
+
+    const matchesCategory = group.categories.includes(category)
+    const matchesAltitude =
+      altitude != null &&
+      altitude >= group.altitudeRange[0] &&
+      altitude <= group.altitudeRange[1]
+    const matchesSpeed =
+      speed != null &&
+      speed >= group.speedRange[0] &&
+      speed <= group.speedRange[1]
+
+    return matchesCategory && matchesAltitude && matchesSpeed
+  })
 }

@@ -1,12 +1,18 @@
 import { TripsLayer } from 'deck.gl'
 import { useMemo } from 'react'
-import type { AircraftMap, AircraftTrip } from '../types/aerial'
+import type {
+  AircraftMap,
+  AircraftTrip,
+  AircraftHighlightGroup,
+} from '../types/aerial'
 import { normalizeAltitude } from '../utils/aerialUtils'
+import { getAircraftTrailColor } from '../utils/colorUtils'
 
 // Trails for the last 5 segmenets of each aircraft
 export default function useAircraftTrailLayer(
   aircraftMap: AircraftMap,
   selectedAircraftHex: string,
+  highlightGroups: AircraftHighlightGroup[],
 ) {
   const recentPaths = useMemo<AircraftTrip[]>(() => {
     return Object.values(aircraftMap)
@@ -45,11 +51,14 @@ export default function useAircraftTrailLayer(
       getPath: (trip) => trip.path,
       getTimestamps: (trip) => trip.timestamps,
       getColor: (trip) =>
-        selectedAircraftHex && trip.hex !== selectedAircraftHex
-          ? [56, 189, 248, 60]
-          : [56, 189, 248, 180],
+        getAircraftTrailColor(
+          aircraftMap[trip.hex],
+          highlightGroups,
+          selectedAircraftHex,
+          trip.hex,
+        ),
       updateTriggers: {
-        getColor: [selectedAircraftHex],
+        getColor: [selectedAircraftHex, highlightGroups, aircraftMap],
       },
       widthMinPixels: 2,
       currentTime,
@@ -59,7 +68,7 @@ export default function useAircraftTrailLayer(
       capRounded: true,
       jointRounded: true,
     })
-  }, [recentPaths, selectedAircraftHex])
+  }, [recentPaths, selectedAircraftHex, highlightGroups, aircraftMap])
 
   return tripsLayer
 }

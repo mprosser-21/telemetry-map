@@ -5,6 +5,9 @@ import DeckGL from 'deck.gl'
 import useAircraft from '../hooks/useAircraft'
 import { useState } from 'react'
 import Toolbar from './Toolbar'
+import type { AircraftHighlightGroup } from '@/types/aerial'
+
+export type ActivePanel = 'filters' | 'details' | undefined
 
 const INITIAL_VIEW_STATE = {
   latitude: 40.7128,
@@ -15,23 +18,29 @@ const INITIAL_VIEW_STATE = {
 export default function MapView() {
   const aircraftMap = useAircraft()
   const [selectedAircraftHex, setSelectedAircraftHex] = useState<string>('')
-  const [detailsOpen, setDetailsOpen] = useState(false)
+  const [activePanel, setActivePanel] = useState<ActivePanel>()
+  const [highlightGroups, setHighlightGroups] = useState<
+    AircraftHighlightGroup[]
+  >([])
   const handleSelectedAircraftHexChange = (hex: string) => {
     setSelectedAircraftHex(hex)
-    setDetailsOpen(Boolean(hex))
+    setActivePanel(hex ? 'details' : undefined)
   }
   const aerialLayers = useAerialLayers(
     aircraftMap,
     selectedAircraftHex,
     handleSelectedAircraftHexChange,
+    highlightGroups,
   )
 
   return (
     <div className="relative h-full w-full">
       <Toolbar
         selectedAircraft={aircraftMap[selectedAircraftHex]}
-        detailsOpen={detailsOpen}
-        setDetailsOpen={setDetailsOpen}
+        activePanel={activePanel}
+        setActivePanel={setActivePanel}
+        highlightGroups={highlightGroups}
+        setHighlightGroups={setHighlightGroups}
       />
 
       <DeckGL
@@ -49,9 +58,7 @@ export default function MapView() {
           attributionControl={false}
           mapStyle={import.meta.env.VITE_MAPBOX_STYLE}
           reuseMaps={true}
-        >
-          {/* <NavigationControl visualizePitch={true} /> */}
-        </ReactMapGL>
+        />
       </DeckGL>
     </div>
   )

@@ -1,40 +1,78 @@
+import type { Dispatch, SetStateAction } from 'react'
 import { SlidersHorizontalIcon, RouteIcon } from 'lucide-react'
 import { Button } from './ui/button'
 import { ButtonGroup } from './ui/button-group'
-import type { Aircraft } from '@/types/aerial'
+import type { Aircraft, AircraftHighlightGroup } from '@/types/aerial'
 import FlightInspector from './FlightInspector'
+import HighlightGroupsPanel from './highlightGroups/HighlightGroupsPanel'
+import type { ActivePanel } from './MapView'
 
 export default function Toolbar({
   selectedAircraft,
-  detailsOpen,
-  setDetailsOpen,
+  activePanel,
+  setActivePanel,
+  highlightGroups,
+  setHighlightGroups,
 }: {
   selectedAircraft?: Aircraft
-  detailsOpen: boolean
-  setDetailsOpen: (open: boolean) => void
+  activePanel: ActivePanel
+  setActivePanel: Dispatch<SetStateAction<ActivePanel>>
+  highlightGroups: AircraftHighlightGroup[]
+  setHighlightGroups: Dispatch<SetStateAction<AircraftHighlightGroup[]>>
 }) {
   return (
     <div className="absolute inset-x-0 top-6 z-50">
       <div className="absolute right-6 top-0">
         <ButtonGroup>
-          <Button variant="outline" aria-label="Filter">
+          <Button
+            variant="outline"
+            aria-label={
+              activePanel === 'filters' ? 'Hide filters' : 'Show filters'
+            }
+            aria-pressed={activePanel === 'filters'}
+            onClick={() => {
+              setActivePanel((currentPanel) =>
+                currentPanel === 'filters' ? undefined : 'filters',
+              )
+            }}
+          >
             <SlidersHorizontalIcon />
           </Button>
           <Button
             variant="outline"
             aria-label={
-              detailsOpen ? 'Hide flight details' : 'Show flight details'
+              activePanel === 'details'
+                ? 'Hide flight details'
+                : 'Show flight details'
             }
-            aria-pressed={detailsOpen}
+            aria-pressed={activePanel === 'details'}
             onClick={() => {
-              setDetailsOpen(!detailsOpen)
+              setActivePanel((currentPanel) =>
+                currentPanel === 'details' ? undefined : 'details',
+              )
             }}
           >
             <RouteIcon />
           </Button>
         </ButtonGroup>
       </div>
-      <FlightInspector aircraft={selectedAircraft} open={detailsOpen} />
+      {activePanel ? (
+        <div
+          className={`absolute top-12 right-6 overflow-hidden rounded-lg border border-border bg-card shadow-lg ${
+            activePanel === 'filters' ? 'w-80' : 'w-60'
+          }`}
+        >
+          {activePanel === 'filters' && (
+          <HighlightGroupsPanel
+            groups={highlightGroups}
+            setGroups={setHighlightGroups}
+          />
+          )}
+          {activePanel === 'details' && (
+            <FlightInspector aircraft={selectedAircraft} />
+          )}
+        </div>
+      ) : null}
     </div>
   )
 }

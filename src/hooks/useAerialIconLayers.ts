@@ -1,23 +1,36 @@
 import { ScatterplotLayer, IconLayer } from 'deck.gl'
 import { useMemo, useState } from 'react'
-import type { AircraftMap, Aircraft } from '../types/aerial'
+import type {
+  AircraftMap,
+  Aircraft,
+  AircraftHighlightGroup,
+} from '../types/aerial'
 import {
   getAircraftPosition,
   AERIAL_ICON_MAPPING,
   getAerialIcon,
 } from '../utils/aerialUtils'
+import {
+  getAircraftHaloColors,
+  getAircraftIconColor,
+} from '../utils/colorUtils'
 
 // Layer for icons at aircraft locations and a layer to add hover halo effect
 export default function useAerialIconLayers(
   aircraftMap: AircraftMap,
   selectedAircraftHex: string,
   setSelectedAircraftHex: (hex: string) => void,
+  highlightGroups: AircraftHighlightGroup[],
 ) {
   const [hoveredAircraftHex, setHoveredAircraftHex] = useState('')
 
   const hoverLayer = useMemo(() => {
     const hoveredAircraft = aircraftMap[hoveredAircraftHex]
     const data = hoveredAircraft ? [hoveredAircraft] : []
+    const { lineColor, fillColor } = getAircraftHaloColors(
+      hoveredAircraft,
+      highlightGroups,
+    )
 
     return new ScatterplotLayer<Aircraft>({
       id: 'aerial-hover-halo',
@@ -29,13 +42,13 @@ export default function useAerialIconLayers(
       radiusMaxPixels: 22,
       stroked: true,
       filled: true,
-      getLineColor: [125, 211, 252, 220],
-      getFillColor: [56, 189, 248, 30],
+      getLineColor: lineColor,
+      getFillColor: fillColor,
       lineWidthMinPixels: 1,
       billboard: false,
       pickable: false,
     })
-  }, [aircraftMap, hoveredAircraftHex])
+  }, [aircraftMap, hoveredAircraftHex, highlightGroups])
 
   const iconLayer = useMemo(() => {
     const aircraftLocations = Object.values(aircraftMap)
@@ -57,15 +70,9 @@ export default function useAerialIconLayers(
       getAngle: (aircraft) => -(aircraft.direction ?? 0),
       getIcon: (aircraft) => getAerialIcon(aircraft.category),
       getColor: (aircraft) =>
-        aircraft.altitude === 'ground'
-          ? selectedAircraftHex && aircraft.hex !== selectedAircraftHex
-            ? [163, 163, 163, 90]
-            : [163, 163, 163, 255]
-          : selectedAircraftHex && aircraft.hex !== selectedAircraftHex
-            ? [56, 189, 248, 90]
-            : [56, 189, 248, 255],
+        getAircraftIconColor(aircraft, highlightGroups, selectedAircraftHex),
       updateTriggers: {
-        getColor: [selectedAircraftHex],
+        getColor: [selectedAircraftHex, highlightGroups],
       },
       getSize: 16,
       sizeUnits: 'pixels',
@@ -73,7 +80,12 @@ export default function useAerialIconLayers(
       pickable: true,
       billboard: false,
     })
-  }, [aircraftMap, selectedAircraftHex, setSelectedAircraftHex])
+  }, [
+    aircraftMap,
+    selectedAircraftHex,
+    setSelectedAircraftHex,
+    highlightGroups,
+  ])
 
   return [hoverLayer, iconLayer]
 }
