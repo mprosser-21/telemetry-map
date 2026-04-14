@@ -17,7 +17,7 @@ import {
 } from '../utils/colorUtils'
 
 // Layer for icons at aircraft locations and a layer to add hover halo effect
-export default function useAerialIconLayers(
+export default function useIconLayers(
   aircraftMap: AircraftMap,
   selectedAircraftHex: string,
   setSelectedAircraftHex: (hex: string) => void,
@@ -34,7 +34,7 @@ export default function useAerialIconLayers(
     )
 
     return new ScatterplotLayer<Aircraft>({
-      id: 'aerial-hover-halo',
+      id: 'hover-halo',
       data,
       getPosition: (aircraft) => getAircraftPosition(aircraft),
       getRadius: 1200,
@@ -55,7 +55,7 @@ export default function useAerialIconLayers(
     const aircraftLocations = Object.values(aircraftMap)
 
     return new IconLayer<Aircraft>({
-      id: 'aerial-icons',
+      id: 'aircraft-icons',
       data: aircraftLocations,
       iconAtlas: '/aerial-icon-atlas.svg',
       iconMapping: AERIAL_ICON_MAPPING,

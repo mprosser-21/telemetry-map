@@ -1,9 +1,11 @@
 import ReactMapGL from 'react-map-gl/mapbox'
 import 'mapbox-gl/dist/mapbox-gl.css'
-import useAerialLayers from '../hooks/useAerialLayer'
 import DeckGL from 'deck.gl'
 import useAircraft from '../hooks/useAircraft'
 import { useState } from 'react'
+import useSelectedLayer from '../hooks/useSelectedLayer'
+import useAircraftTrailLayer from '../hooks/useAircraftTrailLayer'
+import useIconLayers from '../hooks/useIconLayers'
 import Toolbar from './Toolbar'
 import Legend from './Legend'
 import type { AircraftHighlightGroup } from '@/types/aerial'
@@ -27,7 +29,16 @@ export default function MapView() {
     setSelectedAircraftHex(hex)
     setActivePanel(hex ? 'details' : undefined)
   }
-  const aerialLayers = useAerialLayers(
+  const selectedTripLayer = useSelectedLayer(
+    aircraftMap[selectedAircraftHex],
+    highlightGroups,
+  )
+  const aircraftTrailLayer = useAircraftTrailLayer(
+    aircraftMap,
+    selectedAircraftHex,
+    highlightGroups,
+  )
+  const [hoverLayer, iconLayer] = useIconLayers(
     aircraftMap,
     selectedAircraftHex,
     handleSelectedAircraftHexChange,
@@ -47,7 +58,7 @@ export default function MapView() {
       <DeckGL
         controller={true}
         initialViewState={INITIAL_VIEW_STATE}
-        layers={aerialLayers}
+        layers={[selectedTripLayer, hoverLayer, iconLayer, aircraftTrailLayer]}
         onClick={(info) => {
           if (!info.object) {
             handleSelectedAircraftHexChange('')

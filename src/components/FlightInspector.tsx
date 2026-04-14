@@ -32,7 +32,7 @@ export default function FlightInspector({
             <div>{direction != null ? `${direction}°` : 'N/A'}</div>
             <div className="lowercase text-muted-foreground">Altitude</div>
             <div>
-              {altitude
+              {altitude != null
                 ? altitude === 'ground'
                   ? 'Ground'
                   : `${altitude.toLocaleString()} ft`

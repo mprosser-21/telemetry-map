@@ -40,7 +40,7 @@ export default function useSelectedLayers(
     const trailLength = selectedTrip ? selectedTrip.timestamps.length : 0
 
     return new TripsLayer<AircraftTrip>({
-      id: 'aerial-selected-path',
+      id: 'selected-path',
       data,
       getPath: (trip) => trip.path,
       getTimestamps: (trip) => trip.timestamps,
