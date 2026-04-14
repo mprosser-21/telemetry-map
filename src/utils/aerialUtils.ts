@@ -1,4 +1,9 @@
-import type { ADSBData, AerialIconMapping, AircraftMap } from '../types/aerial'
+import type {
+  ADSBData,
+  AerialIconMapping,
+  Aircraft,
+  AircraftMap,
+} from '../types/aerial'
 
 export async function fetcher(url: string): Promise<ADSBData> {
   const res = await fetch(url)
@@ -80,6 +85,16 @@ export function normalizeAltitude(altitude?: string | number | null) {
   }
 
   return numericAltitude * FEET_TO_METERS
+}
+
+export function getAircraftPosition(
+  aircraft: Aircraft,
+): [number, number, number] {
+  return [
+    aircraft.lon ?? 0,
+    aircraft.lat ?? 0,
+    normalizeAltitude(aircraft.altitude),
+  ]
 }
 
 export const AERIAL_ICON_MAPPING: AerialIconMapping = {

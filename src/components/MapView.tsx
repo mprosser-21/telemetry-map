@@ -15,7 +15,11 @@ const INITIAL_VIEW_STATE = {
 export default function MapView() {
   const aircraftMap = useAircraft()
   const [selectedAircraftHex, setSelectedAircraftHex] = useState<string>('')
-  const aerialLayers = useAerialLayers(aircraftMap, setSelectedAircraftHex)
+  const aerialLayers = useAerialLayers(
+    aircraftMap,
+    selectedAircraftHex,
+    setSelectedAircraftHex,
+  )
 
   return (
     <>
@@ -24,6 +28,11 @@ export default function MapView() {
         controller={true}
         initialViewState={INITIAL_VIEW_STATE}
         layers={aerialLayers}
+        onClick={(info) => {
+          if (!info.object) {
+            setSelectedAircraftHex('')
+          }
+        }}
       >
         <ReactMapGL
           mapboxAccessToken={import.meta.env.VITE_MAPBOX_ACCESS_TOKEN}

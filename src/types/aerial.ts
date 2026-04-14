@@ -40,3 +40,9 @@ export type AerialIconMapping = {
     mask: boolean
   }
 }
+
+export type AircraftTrip = {
+  hex: string
+  path: [number, number, number][]
+  timestamps: number[]
+}
