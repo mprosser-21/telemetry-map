@@ -9,6 +9,7 @@ import {
   getAircraftPosition,
   AERIAL_ICON_MAPPING,
   getAerialIcon,
+  getAircraftCategory,
 } from '../utils/aerialUtils'
 import {
   getAircraftHaloColors,
@@ -67,7 +68,10 @@ export default function useAerialIconLayers(
         }
       },
       getPosition: (aircraft) => getAircraftPosition(aircraft),
-      getAngle: (aircraft) => -(aircraft.direction ?? 0),
+      getAngle: (aircraft) =>
+        -(getAircraftCategory(aircraft.category) === 'fixedWing'
+          ? (aircraft.direction ?? 0)
+          : 0),
       getIcon: (aircraft) => getAerialIcon(aircraft.category),
       getColor: (aircraft) =>
         getAircraftIconColor(aircraft, highlightGroups, selectedAircraftHex),

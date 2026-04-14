@@ -7,7 +7,7 @@ import {
   ComboboxTrigger,
   ComboboxValue,
 } from '../ui/combobox'
-import type { HighlightGroupColorKey } from '@/types/aerial'
+import type { HighlightGroupColorKey } from '@/types/color'
 import { HIGHLIGHT_GROUP_COLORS } from '@/utils/colorUtils'
 
 export default function ColorPicker({

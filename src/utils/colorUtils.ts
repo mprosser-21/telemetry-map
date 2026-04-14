@@ -87,11 +87,19 @@ export function getAircraftHaloColors(
   aircraft: Aircraft | undefined,
   highlightGroups: AircraftHighlightGroup[],
 ): { lineColor: RGBA; fillColor: RGBA } {
-  const highlightColor = aircraft
-    ? getAircraftHighlightColor(aircraft, highlightGroups)
-    : null
-  const lineBaseColor = highlightColor ?? DEFAULT_HALO_LINE_COLOR
-  const fillBaseColor = highlightColor ?? DEFAULT_HALO_FILL_COLOR
+  const isGroundAircraft = aircraft?.altitude === 'ground'
+  const highlightColor =
+    aircraft && !isGroundAircraft
+      ? getAircraftHighlightColor(aircraft, highlightGroups)
+      : null
+
+  const lineBaseColor = isGroundAircraft
+    ? DEFAULT_GROUND_COLOR
+    : (highlightColor ?? DEFAULT_HALO_LINE_COLOR)
+
+  const fillBaseColor = isGroundAircraft
+    ? DEFAULT_GROUND_COLOR
+    : (highlightColor ?? DEFAULT_HALO_FILL_COLOR)
 
   return {
     lineColor: withAlpha(lineBaseColor, 220),

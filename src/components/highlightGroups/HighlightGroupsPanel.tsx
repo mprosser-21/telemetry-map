@@ -37,9 +37,9 @@ export default function HighlightGroupsPanel({
         </div>
       </div>
 
-      <Separator className="mt-2 mb-4" />
+      <Separator className="mt-2" />
 
-      <div className="max-h-[28rem] space-y-4 overflow-y-auto px-4 pb-4">
+      <div className="max-h-[28rem] space-y-4 overflow-y-auto p-4">
         {groups.length === 0 ? (
           <div className="rounded-lg border border-dashed border-border px-4 py-5 text-sm text-muted-foreground">
             No active groups. Please add one to start highlighting matches.
