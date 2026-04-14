@@ -1,14 +1,14 @@
-import type { Aircraft } from '../types/aerial'
-import { aircraftTypeDesignators } from '../../data/aircraftTypeDesignators'
+import { aircraftTypeDesignators } from "../../data/aircraftTypeDesignators";
+import type { Aircraft } from "../types/aerial";
 
 export default function FlightInspector({
   aircraft,
 }: {
-  aircraft?: Aircraft
+  aircraft?: Aircraft;
 }) {
-  const { flight, direction, altitude, speed, designator } = aircraft ?? {}
+  const { flight, direction, altitude, speed, designator } = aircraft ?? {};
   const aircraftType =
-    designator && (aircraftTypeDesignators[designator] ?? designator)
+    designator && (aircraftTypeDesignators[designator] ?? designator);
 
   return (
     <div>
@@ -16,7 +16,7 @@ export default function FlightInspector({
         <>
           <div className="border-b border-border pt-4 px-4 pb-2">
             <div className="text-lg font-semibold text-foreground">
-              {flight ?? 'Unknown Flight'}
+              {flight ?? "Unknown Flight"}
             </div>
             {aircraftType && (
               <div
@@ -29,17 +29,17 @@ export default function FlightInspector({
           </div>
           <div className="grid grid-cols-2 gap-x-4 gap-y-2 pt-2 px-4 pb-4 text-sm">
             <div className="lowercase text-muted-foreground">Direction</div>
-            <div>{direction != null ? `${direction}°` : 'N/A'}</div>
+            <div>{direction != null ? `${direction}°` : "N/A"}</div>
             <div className="lowercase text-muted-foreground">Altitude</div>
             <div>
               {altitude != null
-                ? altitude === 'ground'
-                  ? 'Ground'
+                ? altitude === "ground"
+                  ? "Ground"
                   : `${altitude.toLocaleString()} ft`
-                : 'Unknown'}
+                : "Unknown"}
             </div>
             <div className="lowercase text-muted-foreground">Speed</div>
-            <div>{speed != null ? `${speed} kts` : 'Unknown'}</div>
+            <div>{speed != null ? `${speed} kts` : "Unknown"}</div>
           </div>
         </>
       ) : (
@@ -51,5 +51,5 @@ export default function FlightInspector({
         </div>
       )}
     </div>
-  )
+  );
 }

@@ -1,11 +1,11 @@
-import type { Dispatch, SetStateAction } from 'react'
-import { SlidersHorizontalIcon, RouteIcon } from 'lucide-react'
-import { Button } from './ui/button'
-import { ButtonGroup } from './ui/button-group'
-import type { Aircraft, AircraftHighlightGroup } from '@/types/aerial'
-import FlightInspector from './FlightInspector'
-import HighlightGroupsPanel from './highlightGroups/HighlightGroupsPanel'
-import type { ActivePanel } from './MapView'
+import type { Aircraft, AircraftHighlightGroup } from "@/types/aerial";
+import { RouteIcon, SlidersHorizontalIcon } from "lucide-react";
+import type { Dispatch, SetStateAction } from "react";
+import FlightInspector from "./FlightInspector";
+import type { ActivePanel } from "./MapView";
+import HighlightGroupsPanel from "./highlightGroups/HighlightGroupsPanel";
+import { Button } from "./ui/button";
+import { ButtonGroup } from "./ui/button-group";
 
 export default function Toolbar({
   selectedAircraft,
@@ -14,11 +14,11 @@ export default function Toolbar({
   highlightGroups,
   setHighlightGroups,
 }: {
-  selectedAircraft?: Aircraft
-  activePanel: ActivePanel
-  setActivePanel: Dispatch<SetStateAction<ActivePanel>>
-  highlightGroups: AircraftHighlightGroup[]
-  setHighlightGroups: Dispatch<SetStateAction<AircraftHighlightGroup[]>>
+  selectedAircraft?: Aircraft;
+  activePanel: ActivePanel;
+  setActivePanel: Dispatch<SetStateAction<ActivePanel>>;
+  highlightGroups: AircraftHighlightGroup[];
+  setHighlightGroups: Dispatch<SetStateAction<AircraftHighlightGroup[]>>;
 }) {
   return (
     <div className="absolute inset-x-0 top-6 z-50">
@@ -27,13 +27,13 @@ export default function Toolbar({
           <Button
             variant="outline"
             aria-label={
-              activePanel === 'filters' ? 'Hide filters' : 'Show filters'
+              activePanel === "filters" ? "Hide filters" : "Show filters"
             }
-            aria-pressed={activePanel === 'filters'}
+            aria-pressed={activePanel === "filters"}
             onClick={() => {
               setActivePanel((currentPanel) =>
-                currentPanel === 'filters' ? undefined : 'filters',
-              )
+                currentPanel === "filters" ? undefined : "filters",
+              );
             }}
           >
             <SlidersHorizontalIcon />
@@ -41,15 +41,15 @@ export default function Toolbar({
           <Button
             variant="outline"
             aria-label={
-              activePanel === 'details'
-                ? 'Hide flight details'
-                : 'Show flight details'
+              activePanel === "details"
+                ? "Hide flight details"
+                : "Show flight details"
             }
-            aria-pressed={activePanel === 'details'}
+            aria-pressed={activePanel === "details"}
             onClick={() => {
               setActivePanel((currentPanel) =>
-                currentPanel === 'details' ? undefined : 'details',
-              )
+                currentPanel === "details" ? undefined : "details",
+              );
             }}
           >
             <RouteIcon />
@@ -59,20 +59,20 @@ export default function Toolbar({
       {activePanel ? (
         <div
           className={`absolute top-12 left-6 overflow-hidden rounded-lg border border-border bg-card shadow-lg ${
-            activePanel === 'filters' ? 'w-80' : 'w-60'
+            activePanel === "filters" ? "w-80" : "w-60"
           }`}
         >
-          {activePanel === 'filters' && (
+          {activePanel === "filters" && (
             <HighlightGroupsPanel
               groups={highlightGroups}
               setGroups={setHighlightGroups}
             />
           )}
-          {activePanel === 'details' && (
+          {activePanel === "details" && (
             <FlightInspector aircraft={selectedAircraft} />
           )}
         </div>
       ) : null}
     </div>
-  )
+  );
 }

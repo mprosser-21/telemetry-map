@@ -1,4 +1,4 @@
-import { Slider } from '../ui/slider'
+import { Slider } from "../ui/slider";
 
 export default function RangePicker({
   label,
@@ -9,13 +9,13 @@ export default function RangePicker({
   unit,
   onValueChange,
 }: {
-  label: string
-  range: [number, number]
-  min: number
-  max: number
-  step: number
-  unit: string
-  onValueChange: (value: [number, number]) => void
+  label: string;
+  range: [number, number];
+  min: number;
+  max: number;
+  step: number;
+  unit: string;
+  onValueChange: (value: [number, number]) => void;
 }) {
   return (
     <div>
@@ -32,11 +32,11 @@ export default function RangePicker({
         step={step}
         value={range}
         onValueChange={(value) => {
-          if (value.length !== 2) return
+          if (value.length !== 2) return;
 
-          onValueChange([value[0] ?? min, value[1] ?? max])
+          onValueChange([value[0] ?? min, value[1] ?? max]);
         }}
       />
     </div>
-  )
+  );
 }

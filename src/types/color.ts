@@ -1,9 +1,9 @@
-export type RGB = [number, number, number]
-export type RGBA = [number, number, number, number]
+export type RGB = [number, number, number];
+export type RGBA = [number, number, number, number];
 
 export type HighlightGroupColorKey =
-  | 'emerald'
-  | 'orange'
-  | 'rose'
-  | 'violet'
-  | 'yellow'
+  | "emerald"
+  | "orange"
+  | "rose"
+  | "violet"
+  | "yellow";

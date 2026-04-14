@@ -1,49 +1,49 @@
-import ReactMapGL from 'react-map-gl/mapbox'
-import 'mapbox-gl/dist/mapbox-gl.css'
-import DeckGL from 'deck.gl'
-import useAircraft from '../hooks/useAircraft'
-import { useState } from 'react'
-import useSelectedLayer from '../hooks/useSelectedLayer'
-import useAircraftTrailLayer from '../hooks/useAircraftTrailLayer'
-import useIconLayers from '../hooks/useIconLayers'
-import Toolbar from './Toolbar'
-import Legend from './Legend'
-import type { AircraftHighlightGroup } from '@/types/aerial'
+import ReactMapGL from "react-map-gl/mapbox";
+import "mapbox-gl/dist/mapbox-gl.css";
+import type { AircraftHighlightGroup } from "@/types/aerial";
+import DeckGL from "deck.gl";
+import { useState } from "react";
+import useAircraft from "../hooks/useAircraft";
+import useAircraftTrailLayer from "../hooks/useAircraftTrailLayer";
+import useIconLayers from "../hooks/useIconLayers";
+import useSelectedLayer from "../hooks/useSelectedLayer";
+import Legend from "./Legend";
+import Toolbar from "./Toolbar";
 
-export type ActivePanel = 'filters' | 'details' | undefined
+export type ActivePanel = "filters" | "details" | undefined;
 
 const INITIAL_VIEW_STATE = {
   latitude: 40.7128,
   longitude: -74.006,
   zoom: 8,
-}
+};
 
 export default function MapView() {
-  const aircraftMap = useAircraft()
-  const [selectedAircraftHex, setSelectedAircraftHex] = useState<string>('')
-  const [activePanel, setActivePanel] = useState<ActivePanel>()
+  const aircraftMap = useAircraft();
+  const [selectedAircraftHex, setSelectedAircraftHex] = useState<string>("");
+  const [activePanel, setActivePanel] = useState<ActivePanel>();
   const [highlightGroups, setHighlightGroups] = useState<
     AircraftHighlightGroup[]
-  >([])
+  >([]);
   const handleSelectedAircraftHexChange = (hex: string) => {
-    setSelectedAircraftHex(hex)
-    setActivePanel(hex ? 'details' : undefined)
-  }
+    setSelectedAircraftHex(hex);
+    setActivePanel(hex ? "details" : undefined);
+  };
   const selectedTripLayer = useSelectedLayer(
     aircraftMap[selectedAircraftHex],
     highlightGroups,
-  )
+  );
   const aircraftTrailLayer = useAircraftTrailLayer(
     aircraftMap,
     selectedAircraftHex,
     highlightGroups,
-  )
+  );
   const [hoverLayer, iconLayer] = useIconLayers(
     aircraftMap,
     selectedAircraftHex,
     handleSelectedAircraftHexChange,
     highlightGroups,
-  )
+  );
 
   return (
     <div className="relative h-full w-full">
@@ -61,7 +61,7 @@ export default function MapView() {
         layers={[selectedTripLayer, hoverLayer, iconLayer, aircraftTrailLayer]}
         onClick={(info) => {
           if (!info.object) {
-            handleSelectedAircraftHexChange('')
+            handleSelectedAircraftHexChange("");
           }
         }}
       >
@@ -73,5 +73,5 @@ export default function MapView() {
         />
       </DeckGL>
     </div>
-  )
+  );
 }

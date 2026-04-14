@@ -1,11 +1,11 @@
-import { SendHorizontalIcon, CircleXIcon, DiamondIcon } from 'lucide-react'
-import type { AircraftHighlightGroup } from '@/types/aerial'
-import { HIGHLIGHT_GROUP_COLORS, toRgbString } from '@/utils/colorUtils'
+import type { AircraftHighlightGroup } from "@/types/aerial";
+import { HIGHLIGHT_GROUP_COLORS, toRgbString } from "@/utils/colorUtils";
+import { CircleXIcon, DiamondIcon, SendHorizontalIcon } from "lucide-react";
 
 export default function Legend({
   groups,
 }: {
-  groups: AircraftHighlightGroup[]
+  groups: AircraftHighlightGroup[];
 }) {
   return (
     <div className="absolute right-6 bottom-6 z-50 flex w-56 flex-col gap-3 rounded-lg border border-white/12 bg-card/78 p-4 shadow-lg backdrop-blur-sm">
@@ -45,7 +45,7 @@ export default function Legend({
 
           <div className="space-y-2">
             {groups.map((group) => {
-              const color = HIGHLIGHT_GROUP_COLORS[group.color]
+              const color = HIGHLIGHT_GROUP_COLORS[group.color];
 
               return (
                 <div key={group.id} className="flex items-center gap-2">
@@ -61,11 +61,11 @@ export default function Legend({
                     </span>
                   </div>
                 </div>
-              )
+              );
             })}
           </div>
         </div>
       ) : null}
     </div>
-  )
+  );
 }

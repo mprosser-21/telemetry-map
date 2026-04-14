@@ -1,30 +1,30 @@
-import { PlusIcon } from 'lucide-react'
-import type { Dispatch, SetStateAction } from 'react'
-import { v4 as uuidv4 } from 'uuid'
-import { Button } from '../ui/button'
-import { Separator } from '../ui/separator'
-import type { AircraftHighlightGroup } from '@/types/aerial'
-import HighlightGroup from './HighlightGroup'
-import { CATEGORY_OPTIONS } from './CategoryPicker'
-import { ALTITUDE_LIMITS, SPEED_LIMITS } from './HighlightGroup'
+import type { AircraftHighlightGroup } from "@/types/aerial";
+import { PlusIcon } from "lucide-react";
+import type { Dispatch, SetStateAction } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
+import { CATEGORY_OPTIONS } from "./CategoryPicker";
+import HighlightGroup from "./HighlightGroup";
+import { ALTITUDE_LIMITS, SPEED_LIMITS } from "./HighlightGroup";
 
 function createHighlightGroup(): AircraftHighlightGroup {
   return {
     id: uuidv4(),
-    name: 'Unnamed Group',
-    color: 'emerald',
+    name: "Unnamed Group",
+    color: "emerald",
     categories: [...CATEGORY_OPTIONS],
     altitudeRange: [...ALTITUDE_LIMITS],
     speedRange: [...SPEED_LIMITS],
-  }
+  };
 }
 
 export default function HighlightGroupsPanel({
   groups,
   setGroups,
 }: {
-  groups: AircraftHighlightGroup[]
-  setGroups: Dispatch<SetStateAction<AircraftHighlightGroup[]>>
+  groups: AircraftHighlightGroup[];
+  setGroups: Dispatch<SetStateAction<AircraftHighlightGroup[]>>;
 }) {
   return (
     <div className="text-card-foreground">
@@ -58,7 +58,7 @@ export default function HighlightGroupsPanel({
               setGroups((currentGroups) => [
                 ...currentGroups,
                 createHighlightGroup(),
-              ])
+              ]);
             }}
           >
             <PlusIcon />
@@ -67,5 +67,5 @@ export default function HighlightGroupsPanel({
         </div>
       </div>
     </div>
-  )
+  );
 }

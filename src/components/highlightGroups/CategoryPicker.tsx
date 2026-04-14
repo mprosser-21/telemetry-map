@@ -1,55 +1,55 @@
-import type { AircraftCategory } from '@/types/aerial'
-import { Badge } from '../ui/badge'
+import type { AircraftCategory } from "@/types/aerial";
+import { Badge } from "../ui/badge";
 
 export const CATEGORY_OPTIONS: AircraftCategory[] = [
-  'fixedWing',
-  'rotorcraft',
-  'other',
-]
+  "fixedWing",
+  "rotorcraft",
+  "other",
+];
 
 const CATEGORY_LABELS: Record<AircraftCategory, string> = {
-  fixedWing: 'Fixed Wing',
-  rotorcraft: 'Rotorcraft',
-  other: 'Other',
-}
+  fixedWing: "Fixed Wing",
+  rotorcraft: "Rotorcraft",
+  other: "Other",
+};
 
 export default function CategoryPicker({
   currentCategories,
   onChange,
 }: {
-  currentCategories: AircraftCategory[]
-  onChange: (newCategories: AircraftCategory[]) => void
+  currentCategories: AircraftCategory[];
+  onChange: (newCategories: AircraftCategory[]) => void;
 }) {
   const toggleCategory = (category: AircraftCategory) => {
     const newCategories = currentCategories.includes(category)
       ? currentCategories.filter((currentValue) => currentValue !== category)
-      : [...currentCategories, category]
+      : [...currentCategories, category];
 
-    onChange(newCategories)
-  }
+    onChange(newCategories);
+  };
   return (
     <div className="flex flex-wrap gap-2">
       {CATEGORY_OPTIONS.map((category) => {
-        const selected = currentCategories.includes(category)
+        const selected = currentCategories.includes(category);
 
         return (
           <Badge
             key={category}
             className="cursor-pointer"
             asChild
-            variant={selected ? 'default' : 'outline'}
+            variant={selected ? "default" : "outline"}
           >
             <button
               type="button"
               onClick={() => {
-                toggleCategory(category)
+                toggleCategory(category);
               }}
             >
               {CATEGORY_LABELS[category]}
             </button>
           </Badge>
-        )
+        );
       })}
     </div>
-  )
+  );
 }

@@ -1,4 +1,6 @@
-import { Button } from '../ui/button'
+import type { HighlightGroupColorKey } from "@/types/color";
+import { HIGHLIGHT_GROUP_COLORS, toRgbString } from "@/utils/colorUtils";
+import { Button } from "../ui/button";
 import {
   Combobox,
   ComboboxContent,
@@ -6,25 +8,23 @@ import {
   ComboboxList,
   ComboboxTrigger,
   ComboboxValue,
-} from '../ui/combobox'
-import type { HighlightGroupColorKey } from '@/types/color'
-import { HIGHLIGHT_GROUP_COLORS, toRgbString } from '@/utils/colorUtils'
+} from "../ui/combobox";
 
 export default function ColorPicker({
   currentColor,
   onChange,
 }: {
-  currentColor: HighlightGroupColorKey
-  onChange: (newColor: HighlightGroupColorKey) => void
+  currentColor: HighlightGroupColorKey;
+  onChange: (newColor: HighlightGroupColorKey) => void;
 }) {
-  const options = Object.entries(HIGHLIGHT_GROUP_COLORS)
+  const options = Object.entries(HIGHLIGHT_GROUP_COLORS);
 
   return (
     <Combobox
       value={currentColor}
       onValueChange={(nextValue) => {
-        if (!nextValue) return
-        onChange(nextValue as HighlightGroupColorKey)
+        if (!nextValue) return;
+        onChange(nextValue as HighlightGroupColorKey);
       }}
     >
       <Button
@@ -64,5 +64,5 @@ export default function ColorPicker({
         </ComboboxList>
       </ComboboxContent>
     </Combobox>
-  )
+  );
 }

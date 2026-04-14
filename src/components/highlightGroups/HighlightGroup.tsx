@@ -1,19 +1,19 @@
-import type { AircraftHighlightGroup } from '@/types/aerial'
-import type { Dispatch, SetStateAction } from 'react'
-import ColorPicker from './ColorPicker'
-import CategoryPicker from './CategoryPicker'
-import RangePicker from './RangePicker'
-import GroupHeader from './GroupHeader'
+import type { AircraftHighlightGroup } from "@/types/aerial";
+import type { Dispatch, SetStateAction } from "react";
+import CategoryPicker from "./CategoryPicker";
+import ColorPicker from "./ColorPicker";
+import GroupHeader from "./GroupHeader";
+import RangePicker from "./RangePicker";
 
-export const ALTITUDE_LIMITS: [number, number] = [0, 45000]
-export const SPEED_LIMITS: [number, number] = [0, 600]
+export const ALTITUDE_LIMITS: [number, number] = [0, 45000];
+export const SPEED_LIMITS: [number, number] = [0, 600];
 
 export default function HighlightGroup({
   group,
   setGroups,
 }: {
-  group: AircraftHighlightGroup
-  setGroups: Dispatch<SetStateAction<AircraftHighlightGroup[]>>
+  group: AircraftHighlightGroup;
+  setGroups: Dispatch<SetStateAction<AircraftHighlightGroup[]>>;
 }) {
   function setGroupField<K extends keyof AircraftHighlightGroup>(
     key: K,
@@ -28,7 +28,7 @@ export default function HighlightGroup({
             }
           : currentGroup,
       ),
-    )
+    );
   }
 
   return (
@@ -36,14 +36,14 @@ export default function HighlightGroup({
       <GroupHeader
         name={group.name}
         onNameChange={(newName) => {
-          setGroupField('name', newName)
+          setGroupField("name", newName);
         }}
         onRemove={() => {
           setGroups((currentGroups) =>
             currentGroups.filter(
               (currentGroup) => currentGroup.id !== group.id,
             ),
-          )
+          );
         }}
       />
 
@@ -55,7 +55,7 @@ export default function HighlightGroup({
           <ColorPicker
             currentColor={group.color}
             onChange={(newColor) => {
-              setGroupField('color', newColor)
+              setGroupField("color", newColor);
             }}
           />
         </div>
@@ -66,7 +66,7 @@ export default function HighlightGroup({
           <CategoryPicker
             currentCategories={group.categories}
             onChange={(newCategories) => {
-              setGroupField('categories', newCategories)
+              setGroupField("categories", newCategories);
             }}
           />
         </div>
@@ -78,7 +78,7 @@ export default function HighlightGroup({
           step={500}
           unit="ft"
           onValueChange={(newAltitudeRange) => {
-            setGroupField('altitudeRange', newAltitudeRange)
+            setGroupField("altitudeRange", newAltitudeRange);
           }}
         />
         <RangePicker
@@ -89,10 +89,10 @@ export default function HighlightGroup({
           step={10}
           unit="kts"
           onValueChange={(newSpeedRange) => {
-            setGroupField('speedRange', newSpeedRange)
+            setGroupField("speedRange", newSpeedRange);
           }}
         />
       </div>
     </div>
-  )
+  );
 }

@@ -1,12 +1,12 @@
-import { TripsLayer } from 'deck.gl'
-import { useMemo } from 'react'
+import { TripsLayer } from "deck.gl";
+import { useMemo } from "react";
 import type {
+  AircraftHighlightGroup,
   AircraftMap,
   AircraftTrip,
-  AircraftHighlightGroup,
-} from '../types/aerial'
-import { normalizeAltitude } from '../utils/aerialUtils'
-import { getAircraftTrailColor } from '../utils/colorUtils'
+} from "../types/aerial";
+import { normalizeAltitude } from "../utils/aerialUtils";
+import { getAircraftTrailColor } from "../utils/colorUtils";
 
 // Trails for the last 5 segmenets of each aircraft
 export default function useAircraftTrailLayer(
@@ -16,13 +16,13 @@ export default function useAircraftTrailLayer(
 ) {
   const recentPaths = useMemo<AircraftTrip[]>(() => {
     return Object.values(aircraftMap)
-      .filter((aircraft) => aircraft.altitude !== 'ground')
+      .filter((aircraft) => aircraft.altitude !== "ground")
       .flatMap((aircraft) => {
-        const { hex, history } = aircraft
-        const visibleHistory = history.slice(-6)
+        const { hex, history } = aircraft;
+        const visibleHistory = history.slice(-6);
 
         if (visibleHistory.length < 2) {
-          return []
+          return [];
         }
 
         return [
@@ -35,18 +35,18 @@ export default function useAircraftTrailLayer(
             ]),
             timestamps: visibleHistory.map((_, index) => index),
           },
-        ]
-      })
-  }, [aircraftMap])
+        ];
+      });
+  }, [aircraftMap]);
 
   const tripsLayer = useMemo(() => {
     const currentTime = Math.max(
       0,
       ...recentPaths.flatMap((path) => path.timestamps),
-    )
+    );
 
     return new TripsLayer<AircraftTrip>({
-      id: 'aerial-paths',
+      id: "aerial-paths",
       data: recentPaths,
       getPath: (trip) => trip.path,
       getTimestamps: (trip) => trip.timestamps,
@@ -67,8 +67,8 @@ export default function useAircraftTrailLayer(
       trailLength: 5,
       capRounded: true,
       jointRounded: true,
-    })
-  }, [recentPaths, selectedAircraftHex, highlightGroups, aircraftMap])
+    });
+  }, [recentPaths, selectedAircraftHex, highlightGroups, aircraftMap]);
 
-  return tripsLayer
+  return tripsLayer;
 }
