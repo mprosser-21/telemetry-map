@@ -1,4 +1,4 @@
-import ReactMapGL, { NavigationControl } from 'react-map-gl/mapbox'
+import ReactMapGL from 'react-map-gl/mapbox'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import useAerialLayers from '../hooks/useAerialLayer'
 import DeckGL from 'deck.gl'
@@ -15,15 +15,26 @@ const INITIAL_VIEW_STATE = {
 export default function MapView() {
   const aircraftMap = useAircraft()
   const [selectedAircraftHex, setSelectedAircraftHex] = useState<string>('')
+  const [showFlightDetails, setShowFlightDetails] = useState(true)
   const aerialLayers = useAerialLayers(
     aircraftMap,
     selectedAircraftHex,
     setSelectedAircraftHex,
   )
+  const selectedAircraft = aircraftMap[selectedAircraftHex]
 
   return (
     <>
-      <FlightInspector aircraft={aircraftMap[selectedAircraftHex]} />
+      {showFlightDetails ? <FlightInspector aircraft={selectedAircraft} /> : null}
+      {selectedAircraft ? (
+        <button
+          type="button"
+          className="absolute right-4 top-4 z-50 rounded-full border border-neutral-500 bg-neutral-800/90 px-3 py-2 text-sm font-medium text-white shadow-lg backdrop-blur-sm transition hover:bg-neutral-700"
+          onClick={() => setShowFlightDetails((current) => !current)}
+        >
+          {showFlightDetails ? 'Hide details' : 'Show details'}
+        </button>
+      ) : null}
       <DeckGL
         controller={true}
         initialViewState={INITIAL_VIEW_STATE}
@@ -31,6 +42,7 @@ export default function MapView() {
         onClick={(info) => {
           if (!info.object) {
             setSelectedAircraftHex('')
+            setShowFlightDetails(true)
           }
         }}
       >
@@ -40,7 +52,7 @@ export default function MapView() {
           mapStyle={import.meta.env.VITE_MAPBOX_STYLE}
           reuseMaps={true}
         >
-          <NavigationControl visualizePitch={true} />
+          {/* <NavigationControl visualizePitch={true} /> */}
         </ReactMapGL>
       </DeckGL>
     </>
