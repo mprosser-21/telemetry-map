@@ -1,14 +1,51 @@
 import type { Aircraft } from '../types/aerial'
 import { aircraftTypeDesignators } from '../../data/aircraftTypeDesignators'
+import { cn } from '@/lib/utils'
+import { useEffect, useState } from 'react'
 
-export default function FlightInspector({ aircraft }: { aircraft?: Aircraft }) {
-  const { flight, direction, altitude, speed, designator } = aircraft ?? {}
+export default function FlightInspector({
+  aircraft,
+  open,
+}: {
+  aircraft?: Aircraft
+  open: boolean
+}) {
+  const [displayAircraft, setDisplayAircraft] = useState<Aircraft | undefined>(
+    aircraft,
+  )
+
+  // When selected changes, update the displayed aircraft
+  // When closed, wait before hiding to ensure smooth animation/transition
+  useEffect(() => {
+    if (aircraft) {
+      setDisplayAircraft(aircraft)
+      return
+    }
+
+    if (!open) {
+      const timeout = window.setTimeout(() => {
+        setDisplayAircraft(undefined)
+      }, 200)
+
+      return () => window.clearTimeout(timeout)
+    }
+  }, [aircraft, open])
+
+  const { flight, direction, altitude, speed, designator } =
+    displayAircraft ?? {}
   const aircraftType =
     designator && (aircraftTypeDesignators[designator] ?? designator)
 
   return (
-    <div className="absolute w-60 bg-background rounded-lg top-12 right-4">
-      {aircraft ? (
+    <div
+      className={cn(
+        'absolute top-12 right-6 w-60 rounded-lg border border-border bg-background shadow-lg transition-all duration-200',
+        open
+          ? 'pointer-events-auto translate-x-0 scale-100 opacity-100'
+          : 'pointer-events-none translate-x-2 scale-95 opacity-0',
+      )}
+    >
+      {displayAircraft ? (
         <>
           <div className="border-b border-border pt-4 px-4 pb-2">
             <div className="text-lg font-semibold text-foreground">

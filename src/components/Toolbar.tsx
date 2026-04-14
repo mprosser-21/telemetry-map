@@ -15,7 +15,7 @@ export default function Toolbar({
 }) {
   return (
     <div className="absolute inset-x-0 top-6 z-50">
-      <div className="absolute right-4 top-0">
+      <div className="absolute right-6 top-0">
         <ButtonGroup>
           <Button variant="outline" aria-label="Filter">
             <SlidersHorizontalIcon />
@@ -34,7 +34,7 @@ export default function Toolbar({
           </Button>
         </ButtonGroup>
       </div>
-      {detailsOpen && <FlightInspector aircraft={selectedAircraft} />}
+      <FlightInspector aircraft={selectedAircraft} open={detailsOpen} />
     </div>
   )
 }

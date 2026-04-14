@@ -1,9 +1,8 @@
-import './App.css'
 import MapView from './components/MapView'
 
 function App() {
   return (
-    <div className="flex h-dvh">
+    <div className="fixed inset-0">
       <MapView />
     </div>
   )
