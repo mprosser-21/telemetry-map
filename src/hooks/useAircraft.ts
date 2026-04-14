@@ -12,11 +12,11 @@ export default function useAircraft() {
   const [aircraftMap, setAircraftMap] = useState<AircraftMap>({})
 
   // TODO: Error handling with retry / backoff
-  const { data } = useSWR('/api/adsb/v2/point/41.8240/-71.4128/50', fetcher, {
+  const { data } = useSWR('/api/adsb/v2/point/40.7128/-74.0060/100', fetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
-    refreshInterval: 5000,
+    refreshInterval: 2500,
   })
 
   useEffect(() => {
