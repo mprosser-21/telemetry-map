@@ -22,6 +22,10 @@ export function withAlpha(color: RGB, alpha: number): RGBA {
   return [...color, alpha]
 }
 
+export function toRgbString(color: RGB): string {
+  return `rgb(${color[0]} ${color[1]} ${color[2]})`
+}
+
 export function getAircraftHighlightColor(
   aircraft: Aircraft,
   highlightGroups: AircraftHighlightGroup[],

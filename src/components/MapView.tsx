@@ -5,6 +5,7 @@ import DeckGL from 'deck.gl'
 import useAircraft from '../hooks/useAircraft'
 import { useState } from 'react'
 import Toolbar from './Toolbar'
+import Legend from './Legend'
 import type { AircraftHighlightGroup } from '@/types/aerial'
 
 export type ActivePanel = 'filters' | 'details' | undefined
@@ -42,7 +43,7 @@ export default function MapView() {
         highlightGroups={highlightGroups}
         setHighlightGroups={setHighlightGroups}
       />
-
+      <Legend groups={highlightGroups} />
       <DeckGL
         controller={true}
         initialViewState={INITIAL_VIEW_STATE}

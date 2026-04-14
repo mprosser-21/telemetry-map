@@ -8,7 +8,7 @@ import {
   ComboboxValue,
 } from '../ui/combobox'
 import type { HighlightGroupColorKey } from '@/types/color'
-import { HIGHLIGHT_GROUP_COLORS } from '@/utils/colorUtils'
+import { HIGHLIGHT_GROUP_COLORS, toRgbString } from '@/utils/colorUtils'
 
 export default function ColorPicker({
   currentColor,
@@ -37,7 +37,9 @@ export default function ColorPicker({
             <span
               className="size-3 rounded-sm border border-black/10"
               style={{
-                backgroundColor: `rgb(${HIGHLIGHT_GROUP_COLORS[currentColor].rgb.join(' ')})`,
+                backgroundColor: toRgbString(
+                  HIGHLIGHT_GROUP_COLORS[currentColor].rgb,
+                ),
               }}
             />
             <ComboboxValue>
@@ -53,7 +55,7 @@ export default function ColorPicker({
               <span
                 className="size-3 rounded-sm border border-black/10"
                 style={{
-                  backgroundColor: `rgb(${color.rgb.join(' ')})`,
+                  backgroundColor: toRgbString(color.rgb),
                 }}
               />
               {color.label}
