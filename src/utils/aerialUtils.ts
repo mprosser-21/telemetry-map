@@ -16,6 +16,7 @@ export async function fetcher(url: string): Promise<ADSBData> {
   return data as ADSBData;
 }
 
+// Always appends to existing history, but should implement a cap
 export function processAerialUpdate(
   existingAircraftMap: AircraftMap,
   adsbUpdate: ADSBData,
