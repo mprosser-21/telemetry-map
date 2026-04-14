@@ -9,7 +9,6 @@ import FlightInspector from './FlightInspector'
 const INITIAL_VIEW_STATE = {
   latitude: 41.824,
   longitude: -71.4128,
-  pitch: 55,
   zoom: 12,
 }
 

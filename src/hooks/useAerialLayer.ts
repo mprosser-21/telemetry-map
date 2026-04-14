@@ -1,6 +1,6 @@
-import { IconLayer, TripsLayer } from 'deck.gl'
-import { useMemo } from 'react'
-import type { AircraftMap } from '../types/aerial'
+import { IconLayer, ScatterplotLayer, TripsLayer } from 'deck.gl'
+import { useMemo, useState } from 'react'
+import type { Aircraft, AircraftMap } from '../types/aerial'
 import {
   AERIAL_ICON_MAPPING,
   getAerialIcon,
@@ -17,6 +17,8 @@ export default function useAerialLayers(
   aircraftMap: AircraftMap,
   setSelectedAircraftHex: (hex: string) => void,
 ) {
+  const [hoveredAircraftHex, setHoveredAircraftHex] = useState('')
+
   // Trails for the last 5 segmenets of each aircraft
   const recentPaths = useMemo<AircraftTrip[]>(() => {
     return Object.values(aircraftMap)
@@ -43,7 +45,7 @@ export default function useAerialLayers(
       })
   }, [aircraftMap])
 
-  const pathLayer = useMemo(() => {
+  const tripsLayer = useMemo(() => {
     const currentTime = Math.max(
       0,
       ...recentPaths.flatMap((path) => path.timestamps),
@@ -55,7 +57,6 @@ export default function useAerialLayers(
       getPath: (trip) => trip.path,
       getTimestamps: (trip) => trip.timestamps,
       getColor: () => [56, 189, 248],
-      getWidth: 2,
       widthMinPixels: 2,
       currentTime,
       opacity: 0.8,
@@ -66,20 +67,54 @@ export default function useAerialLayers(
     })
   }, [recentPaths])
 
+  const hoveredAircraft = useMemo(() => {
+    return hoveredAircraftHex ? aircraftMap[hoveredAircraftHex] : undefined
+  }, [aircraftMap, hoveredAircraftHex])
+
+  const hoverLayer = useMemo(() => {
+    const data = hoveredAircraft ? [hoveredAircraft] : []
+
+    return new ScatterplotLayer<Aircraft>({
+      id: 'aerial-hover-halo',
+      data,
+      getPosition: (aircraft) => [
+        aircraft.lon ?? 0,
+        aircraft.lat ?? 0,
+        normalizeAltitude(aircraft.altitude),
+      ],
+      getRadius: 1200,
+      radiusUnits: 'meters',
+      radiusMinPixels: 10,
+      radiusMaxPixels: 22,
+      stroked: true,
+      filled: true,
+      getLineColor: [125, 211, 252, 220],
+      getFillColor: [56, 189, 248, 30],
+      lineWidthMinPixels: 1,
+      billboard: false,
+      pickable: false,
+    })
+  }, [hoveredAircraft])
+
   const iconLayer = useMemo(() => {
     const aircraftLocations = Object.values(aircraftMap)
 
-    return new IconLayer({
+    return new IconLayer<Aircraft>({
       id: 'aerial-icons',
       data: aircraftLocations,
       iconAtlas: '/aerial-icon-atlas.svg',
       iconMapping: AERIAL_ICON_MAPPING,
+      onHover: (info) => {
+        setHoveredAircraftHex(info.object?.hex ?? '')
+      },
       onClick: (info) => {
-        setSelectedAircraftHex(info.object.hex)
+        if (info.object) {
+          setSelectedAircraftHex(info.object.hex)
+        }
       },
       getPosition: (aircraft) => [
-        aircraft.lon,
-        aircraft.lat,
+        aircraft.lon ?? 0,
+        aircraft.lat ?? 0,
         normalizeAltitude(aircraft.altitude),
       ],
       getAngle: (aircraft) => -(aircraft.direction ?? 0),
@@ -94,5 +129,5 @@ export default function useAerialLayers(
     })
   }, [aircraftMap, setSelectedAircraftHex])
 
-  return [pathLayer, iconLayer]
+  return [tripsLayer, hoverLayer, iconLayer]
 }
