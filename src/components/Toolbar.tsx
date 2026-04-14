@@ -22,7 +22,7 @@ export default function Toolbar({
 }) {
   return (
     <div className="absolute inset-x-0 top-6 z-50">
-      <div className="absolute right-6 top-0">
+      <div className="absolute left-6 top-0">
         <ButtonGroup>
           <Button
             variant="outline"
@@ -58,15 +58,15 @@ export default function Toolbar({
       </div>
       {activePanel ? (
         <div
-          className={`absolute top-12 right-6 overflow-hidden rounded-lg border border-border bg-card shadow-lg ${
+          className={`absolute top-12 left-6 overflow-hidden rounded-lg border border-border bg-card shadow-lg ${
             activePanel === 'filters' ? 'w-80' : 'w-60'
           }`}
         >
           {activePanel === 'filters' && (
-          <HighlightGroupsPanel
-            groups={highlightGroups}
-            setGroups={setHighlightGroups}
-          />
+            <HighlightGroupsPanel
+              groups={highlightGroups}
+              setGroups={setHighlightGroups}
+            />
           )}
           {activePanel === 'details' && (
             <FlightInspector aircraft={selectedAircraft} />

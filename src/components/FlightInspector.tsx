@@ -43,8 +43,11 @@ export default function FlightInspector({
           </div>
         </>
       ) : (
-        <div className="p-4 text-sm text-muted-foreground">
-          Please select a flight to view details
+        <div className="p-4">
+          <div className="text-lg font-semibold">No Flight Selected</div>
+          <div className="text-sm text-muted-foreground">
+            Please select a flight to view details
+          </div>
         </div>
       )}
     </div>
