@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App.tsx";
 
 const rootElement = document.getElementById("root");
+document.documentElement.classList.add("dark");
 
 if (!rootElement) {
   throw new Error("Root element #root was not found");

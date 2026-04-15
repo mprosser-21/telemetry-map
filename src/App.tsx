@@ -2,7 +2,7 @@ import MapView from "./components/MapView";
 
 function App() {
   return (
-    <div className="dark fixed inset-0 bg-background text-foreground">
+    <div className="fixed inset-0 bg-background text-foreground">
       <MapView />
     </div>
   );
